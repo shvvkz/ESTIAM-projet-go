@@ -26,3 +26,15 @@ type Employee struct {
 func (e *Employee) Raise(percent float64) {
 	e.Salary += e.Salary * percent / 100
 }
+
+// raiseSalaryRequest
+//
+// Represents a request to raise an employee's salary.
+//
+// Fields:
+//   - ID: The unique identifier of the employee whose salary is to be raised.
+//   - Percent: The percentage by which to raise the employee's salary.
+type RaiseSalaryRequest struct {
+	ID      int     `json:"id"`
+	Percent float64 `json:"percent"`
+}

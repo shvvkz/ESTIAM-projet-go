@@ -10,17 +10,19 @@ import (
 	"employee-api/services"
 )
 
+func router(handler *handlers.EmployeeHandler) *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/employees", handler.Employees)
+	mux.HandleFunc("/employees/", handler.Employees)
+	return mux
+}
+
 func main() {
 	service := services.NewEmployeeService()
 	handler := handlers.NewEmployeeHandler(service)
+	mux := router(handler)
 
-	// create a mux to inject logger middleware
-	mux := http.NewServeMux()
-	mux.HandleFunc("/employees", handler.GetEmployees)
-	mux.HandleFunc("/employee", handler.GetEmployee)
-
-	fmt.Println("Server running on http://localhost:8080")
-
+	fmt.Println("Server running on http://localhost:8080\n")
 	log.Fatal(
 		http.ListenAndServe(
 			":8080",

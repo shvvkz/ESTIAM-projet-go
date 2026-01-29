@@ -10,7 +10,8 @@ import "employee-api/models"
 //   - GetAll() []models.Employee: Retrieves all employees.
 type EmployeeService interface {
 	GetAll() []models.Employee
-	GetEmployee(id int) (models.Employee, bool)
+	AddEmployee(employee models.Employee) models.Employee
+	RaiseSalary(id int, percent float64) (models.Employee, bool)
 }
 
 // employeeService
@@ -48,9 +49,37 @@ func (s *employeeService) GetAll() []models.Employee {
 	return s.employees
 }
 
-func (s *employeeService) GetEmployee(id int) (models.Employee, bool) {
-	if id <= 0 || id > len(s.employees) {
-		return models.Employee{}, false
+// AddEmployee(employee models.Employee) -> models.Employee
+//
+// Adds a new employee to the list.
+//
+// Parameters:
+//   - employee: An Employee struct representing the new employee.
+//
+// Returns:
+//   - The added Employee struct with an assigned ID.
+func (s *employeeService) AddEmployee(employee models.Employee) models.Employee {
+	employee.ID = len(s.employees) + 1
+	s.employees = append(s.employees, employee)
+	return employee
+}
+
+// RaiseSalary(id int, percent float64) -> (models.Employee, bool)
+//
+// Raises the salary of an employee by a given percentage.
+//
+// Parameters:
+//   - id: The ID of the employee whose salary is to be raised.
+//   - percent: The percentage by which to raise the salary.
+//
+// Returns:
+//   - The updated Employee struct and a boolean indicating success.
+func (s *employeeService) RaiseSalary(id int, percent float64) (models.Employee, bool) {
+	for i := range s.employees {
+		if s.employees[i].ID == id {
+			s.employees[i].Raise(percent)
+			return s.employees[i], true
+		}
 	}
-	return s.employees[id-1], true
+	return models.Employee{}, false
 }
